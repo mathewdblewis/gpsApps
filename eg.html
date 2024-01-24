@@ -1,34 +1,50 @@
+<!-- 
+NOTE: altitude works in firefox but not in chromium or brave
+alt is in meters, lon and lat in degrees
+ -->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GPS Position Example</title>
+    <title>GPS Position Tracking</title>
 </head>
 <body>
-    <h1>GPS Position Example</h1>
-    <p id="location">Waiting for location...</p>
+    <h1>GPS Position Tracking</h1>
+    <ul id="positionList"></ul>
 
     <script>
-        function showPosition(position) {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
+        const positionList = document.getElementById('positionList');
 
-            const locationElement = document.getElementById('location');
-            locationElement.innerHTML = `Latitude: ${latitude}<br>Longitude: ${longitude}`;
+        function showPosition(position) {
+            time = (new Date()).getTime()/1000
+            const lat = position.coords.latitude
+            const lon = position.coords.longitude
+            const alt = position.coords.altitude
+            // Create a new list item to display the position
+            const listItem = document.createElement('li');
+            listItem.textContent = `lat: ${lat}, lon: ${lon}, alt: ${alt}, time: ${time}`;
+
+            // Add the new position to the list
+            positionList.appendChild(listItem);
         }
 
         function showError(error) {
-            const locationElement = document.getElementById('location');
-            locationElement.innerHTML = `Error getting location: ${error.message}`;
+            console.error('Error getting location:', error.message);
         }
 
-        if (navigator.geolocation) {
+        function updatePosition() {
             navigator.geolocation.getCurrentPosition(showPosition, showError);
-        } else {
-            const locationElement = document.getElementById('location');
-            locationElement.innerHTML = 'Geolocation is not supported by this browser.';
         }
+
+        // Update the position every second (1000 milliseconds)
+        const intervalId = setInterval(updatePosition, 1000);
+
+        // Stop updating after 30 seconds (for example)
+        setTimeout(() => {clearInterval(intervalId);}, 30*1000);
     </script>
 </body>
 </html>
+
