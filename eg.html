@@ -20,17 +20,10 @@
             const alt = position.coords.altitude;
 
             let positionDiff = "";
-            if (prevPosition) {
-                const latDiff = lat - prevPosition.lat;
-                const lonDiff = lon - prevPosition.lon;
-                const altDiff = alt - prevPosition.alt;
-
-                positionDiff = `, lat diff: ${latDiff}, lon diff: ${lonDiff}, alt diff: ${altDiff}`;
-            }
 
             // Create a new list item to display the position
             const listItem = document.createElement('li');
-            listItem.textContent = `lat: ${lat}, lon: ${lon}, alt: ${alt}, time: ${time}${positionDiff}`;
+            listItem.textContent = `lat: ${lat}`;
 
             // Add the new position to the list
             positionList.appendChild(listItem);
@@ -47,8 +40,8 @@
             navigator.geolocation.getCurrentPosition(showPosition, showError);
         }
 
-        // Update the position every second (1000 milliseconds)
-        const intervalId = setInterval(updatePosition, 1000);
+        // Update the position every minute (60*1000 milliseconds)
+        const intervalId = setInterval(updatePosition, 60*1000);
 
         // Stop updating after 30 seconds (for example)
         // setTimeout(() => { clearInterval(intervalId); }, 30 * 1000);
