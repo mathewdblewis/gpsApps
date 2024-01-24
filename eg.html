@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPS Position Example</title>
+</head>
+<body>
+    <h1>GPS Position Example</h1>
+    <p id="location">Waiting for location...</p>
+
+    <script>
+        function showPosition(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            const locationElement = document.getElementById('location');
+            locationElement.innerHTML = `Latitude: ${latitude}<br>Longitude: ${longitude}`;
+        }
+
+        function showError(error) {
+            const locationElement = document.getElementById('location');
+            locationElement.innerHTML = `Error getting location: ${error.message}`;
+        }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            const locationElement = document.getElementById('location');
+            locationElement.innerHTML = 'Geolocation is not supported by this browser.';
+        }
+    </script>
+</body>
+</html>
