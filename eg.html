@@ -1,9 +1,3 @@
-<!-- 
-NOTE: altitude works in firefox but not in chromium or brave
-alt is in meters, lon and lat in degrees
- -->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,18 +11,32 @@ alt is in meters, lon and lat in degrees
 
     <script>
         const positionList = document.getElementById('positionList');
+        let prevPosition;
 
         function showPosition(position) {
-            time = (new Date()).getTime()/1000
-            const lat = position.coords.latitude
-            const lon = position.coords.longitude
-            const alt = position.coords.altitude
+            const time = (new Date()).getTime() / 1000;
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const alt = position.coords.altitude;
+
+            let positionDiff = "";
+            if (prevPosition) {
+                const latDiff = lat - prevPosition.lat;
+                const lonDiff = lon - prevPosition.lon;
+                const altDiff = alt - prevPosition.alt;
+
+                positionDiff = `, lat diff: ${latDiff}, lon diff: ${lonDiff}, alt diff: ${altDiff}`;
+            }
+
             // Create a new list item to display the position
             const listItem = document.createElement('li');
-            listItem.textContent = `lat: ${lat}, lon: ${lon}, alt: ${alt}, time: ${time}`;
+            listItem.textContent = `lat: ${lat}, lon: ${lon}, alt: ${alt}, time: ${time}${positionDiff}`;
 
             // Add the new position to the list
             positionList.appendChild(listItem);
+
+            // Update the previous position
+            prevPosition = { lat, lon, alt };
         }
 
         function showError(error) {
@@ -43,7 +51,7 @@ alt is in meters, lon and lat in degrees
         const intervalId = setInterval(updatePosition, 1000);
 
         // Stop updating after 30 seconds (for example)
-        setTimeout(() => {clearInterval(intervalId);}, 30*1000);
+        // setTimeout(() => { clearInterval(intervalId); }, 30 * 1000);
     </script>
 </body>
 </html>
