@@ -1,0 +1,47 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Worker Example</title>
+</head>
+<body>
+  <h1>Hello, Service Worker!</h1>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('data:text/javascript,' + encodeURIComponent(`
+        self.addEventListener('install', event => {
+          event.waitUntil(
+            caches.open('my-cache').then(cache => {
+              return cache.addAll([
+                '/',
+                '/index.html',
+                '/styles.css',
+                '/script.js'
+              ]);
+            })
+          );
+        });
+
+        self.addEventListener('fetch', event => {
+          event.respondWith(
+            caches.match(event.request).then(response => {
+              return response || fetch(event.request);
+            })
+          );
+        });
+      `))
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
+    }
+  </script>
+</body>
+</html>
+
